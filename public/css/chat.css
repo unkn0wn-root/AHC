@@ -1,0 +1,28 @@
+.time{
+  font-size: 12px;
+}
+.message-body{
+  white-space: pre-wrap;
+}
+.message-bubble {
+    padding: 10px 0;
+    word-wrap: break-word;
+}
+.message-bubble.operator {
+    background-color: #F5F5F5
+}
+.time {
+    text-align: right;
+    display: inline
+}
+.message-bubble>* {
+    padding-left: 10px
+}
+.panel-body {
+    padding: 0
+}
+.panel-heading {
+    background-color: #3d6da7!important;
+    color: #fff!important
+}
+/*chat snipped from http://bootsnipp.com/snippets/40W9n thxx mtownsen*/

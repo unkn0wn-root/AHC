@@ -1,0 +1,126 @@
+extends ./base.pug
+block content
+  style.
+    .label {
+      white-space: normal;
+      margin-left: 5px;
+    }
+    .participant-list{
+      word-wrap:break-word;
+    }
+  if success
+    .alert.alert-success
+      strong Dodano! &nbsp;
+      | Odpowiedź pojawi się na hejto po zaakceptowaniu przez moderatora.
+      br
+      | Jeśli chcesz to zapisz ten kod: <strong>#{reply.auth}</strong> (umożliwi Ci on w przyszłościu udowodnienie autorstwa tego komentarza).
+  .add-reply
+    h1 Dodaj komentarz do 
+      a(href=`http://hejto.pl/wpis/${confession.slug}`, target='_blank') tego wyznania
+    form#confession(method="post")
+      .form-group
+        textarea.form-control.confession#text(type="text", name="text", placeholder="Wpisz tutaj swoj komentarz" rows=10)
+        fieldset.buttons#markdown(style="display: block; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-radius: 4px;")
+          a.btn.btn-default.btn-sm(href="#", title="tekst pogrubiony" style="margin-right: 0.5em;").editb
+            span.glyphicon.glyphicon-bold(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="tekst pochylony" style="margin-right: 0.5em;").editi
+            span.glyphicon.glyphicon-italic(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="cytat" style="margin-right: 0.5em;").editquote
+            span.glyphicon.glyphicon-comment(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="link" style="margin-right: 0.5em;").editlink
+            span.glyphicon.glyphicon-link(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="kod" style="margin-right: 0.5em;").editcode
+            span.glyphicon.glyphicon-flash(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="spoiler" style="margin-right: 0.5em;").editspoiler
+            span.glyphicon.glyphicon-arrow-down(aria-hidden="true")
+          .btn-group
+            button.btn.btn-default.btn-sm.lenny(type="button")
+              a.editlenny(href="#", title="lennyface") ( ͡° ͜ʖ ͡°)
+            button.btn.btn-default.btn-sm.dropdown-toggle(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
+              span.caret
+              span.sr-only Toggle Dropdown
+            ul.dropdown-menu
+              li
+                a.editlenny2(href="#", title="editlenny2")
+                  span ( ͡° ʖ̯ ͡°)
+              li
+                a.editlenny3(href="#", title="editlenny3")
+                  span ( ͡º ͜ʖ͡º)
+              li
+                a.editlenny4(href="#", title="editlenny4")
+                  span ( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)
+              li
+                a.editlenny5(href="#", title="editlenny5")
+                  span (⌐ ͡■ ͜ʖ ͡■)
+              li
+                a.editlenny6(href="#", title="editlenny6")
+                  span (╥﹏╥)
+              li
+                a.editlenny7(href="#", title="editlenny7")
+                  span (╯︵╰,)
+              li
+                a.editlenny8(href="#", title="editlenny8")
+                  span (ʘ‿ʘ)
+              li
+                a.editlenny9(href="#", title="editlenny9")
+                  span (｡◕‿‿◕｡)
+              li
+                a.editlenny10(href="#", title="editlenny10")
+                  span ᕙ(⇀‸↼‶)ᕗ
+              li
+                a.editlenny11(href="#", title="editlenny11")
+                  span ᕦ(òóˇ)ᕤ
+              li
+                a.editlenny12(href="#", title="editlenny12")
+                  span (✌ ﾟ ∀ ﾟ)☞
+              li
+                a.editlenny13(href="#", title="editlenny13")
+                  span ʕ•ᴥ•ʔ
+              li
+                a.editlenny14(href="#", title="editlenny14")
+                  span ᶘᵒᴥᵒᶅ
+              li
+                a.editlenny15(href="#", title="editlenny15")
+                  span (⌒(oo)⌒)
+              li
+                a.editlenny16(href="#", title="editlenny16")
+                  span ᄽὁȍ ̪ őὀᄿ
+              li
+                a.editlenny17(href="#", title="editlenny17")
+                  span ( ͡€ ͜ʖ ͡€)
+              li
+                a.editlenny18(href="#", title="editlenny18")
+                  span ( ͡° ͜ʖ ͡°)
+              li
+                a.editlenny19(href="#", title="editlenny19")
+                  span ( ͡° ͜ʖ ͡°)ﾉ⌐■-■
+              li
+                a.editlenny20(href="#", title="editlenny20")
+                  span (⌐ ͡■ ͜ʖ ͡■)
+              li
+                a.editlenny21(href="#", title="editlenny21")
+                  span (・へ・)
+      .form-group
+        input.form-control(type="text", name="alias", placeholder="Pseudonim (wpisz kod autoryzujący, a zostaniesz oznaczony jako OP)" maxlength=32)
+      .form-group
+        input.form-control(type="url", name="embed", placeholder="URL do obrazka", maxlength=3000)
+        small.form-text.text-muted 
+          | Bezpośredni link do obrazka (zakończony rozszerzeniem pliku np. https://i.imgur.com/3qajQcs.png)
+      .form-group
+        input(name="_csrf", type="hidden", value=csrfToken)
+        button.btn.btn-large.btn-success(type="submit") Wyślij
+      if (participants && participants.length > 0)
+        div.panel.panel-default
+          div.panel-heading Uczestnicy dyskusji
+          div.panel-body.participant-list
+            each participant, index in participants
+              span.label.label-info.participant(data-username=`${participant}`) #{participant}
+  script(src='/js/main.js')
+block script
+  script(type="text/javascript").
+    var cid = '#{confession._id}';
+    var userConfessions = JSON.parse(localStorage.confessions);
+    for(var i in userConfessions){
+      if(userConfessions[i]._id==cid)$('[name=alias]').val(userConfessions[i].auth);
+      break;
+    }

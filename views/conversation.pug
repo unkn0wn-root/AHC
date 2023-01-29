@@ -1,0 +1,30 @@
+extends ./base.pug
+block content
+  link(href="/css/chat.css", rel="stylesheet")
+  .alert.alert-warning
+    | Aby zachować dostęp do tej konwersacji koniecznie zapisz jej adres (autorowi wyznania link do każdej konwersacji wyświetla się na stronie podsumowania wyznania)
+  .container
+    .row
+      .panel.panel-default
+        .panel-heading Konwersacja
+          if type == 'user'
+            |  z #{userObject.username}
+        .panel-body
+          .container#messages
+            if conversation
+              each message, index in conversation.messages
+                -var nickname = (message.OP ? 'OP' : 'Uzytkownik hejto')
+                .row.message-bubble(class=message.OP?'operator':'')
+                  p.text-muted #{nickname}
+                    span.time.pull-right #{message.time}
+                  span.message-body #{message.text}
+          form(id="messageForm" method="post")
+            .input-group
+              textarea#messageBox.form-control(type='text', name='text' autocomplete='off')
+              input(name="_csrf", type="hidden", value=csrfToken)
+              span.input-group-btn
+                button.btn.btn-default.sendMessage(type='submit') Wyślij
+        if conversation
+          p.status-info.
+            Odśwież stronę, aby wyświetlić nowe wiadomości.
+            SHIFT+ENTER aby wstawić nową linię #[div.status-circle]
