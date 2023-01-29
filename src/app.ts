@@ -164,5 +164,6 @@ export const server = http.createServer(app)
 const _port = process.env.PORT || 8080
 
 server.listen(_port, () => {
-	logger.info(`Server started on port: ${_port} [${process.env.NODE_ENV}]`)
+	logger.info(`🛡️ Server started on port: ${_port}`)
+	logger.info(`🖥️ Running in env: ${process.env.NODE_ENV}`)
 })
