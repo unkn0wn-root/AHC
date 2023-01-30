@@ -46,8 +46,7 @@ export const deleteEntryComment = async (postSlug: string, commentUuid: string) 
 
 export const sendPrivateMessage = async (receiver: string, body: string) => {
 	throwIfNullOrEmpty('sendPrivateMessage', receiver)
-	const conversationService = new ConversationService(receiver)
-	return await conversationService.createConversationMessage({content: body})
+	return await new ConversationService(receiver).createConversationMessage({content: body})
 }
 
 export const acceptConfession = async (

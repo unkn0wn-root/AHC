@@ -13,7 +13,7 @@ import { logger } from '../../../logger';
 
 interface IUploadResponse {
 	uuid: string,
-	urls: {[key: string]: string}
+	urls?: {[key: string]: string}
 	error: boolean
 }
 
@@ -130,7 +130,6 @@ abstract class PostService {
 			logger.error('Could not upload image to Hejto S3', { msg: err?.message, stack: err?.stack })
 			return {
 				uuid: null,
-				urls: null,
 				error: true
 			}
 		}
