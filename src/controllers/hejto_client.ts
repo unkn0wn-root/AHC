@@ -58,7 +58,9 @@ export const acceptConfession = async (
 	const post = {
 		content: entryBody,
 		nsfw: adultmedia,
-		tags: []
+		tags: [],
+		community: 'hydepark',
+		type: 'discussion'
 	}
 
 	return await PostService.createPost(post, embed)

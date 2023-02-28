@@ -16,13 +16,13 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: thisPassWillNeverNopeMon19
 
-  amw:
+  ahc:
     build: ./
-    env_file: [ .env.dev ]
+    env_file: [ .env ]
     ports:
       - 8080:8080
     depends_on:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URI: "mongodb://root:thisPassWillNeverNopeMon19@db:27017/ahw?authSource=admin"
+      DATABASE_URI: "mongodb://root:thisPassWillNeverNopeMon19@db:27017/ahc?authSource=admin"

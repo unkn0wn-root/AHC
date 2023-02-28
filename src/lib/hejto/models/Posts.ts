@@ -7,6 +7,8 @@ export interface PostModel {
 			position?: number;
 		}[] | never[] & {length: 0}[];
 	nsfw: boolean;
+	type: string;
+	community: string;
 }
 
 export interface PostImageModel {

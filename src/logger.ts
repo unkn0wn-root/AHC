@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { newline, ROOT_DIR } from './helpers'
+import { newline } from './helpers'
 
 
 const formatStack = (stack: string | undefined) => `${stack ? newline(stack) : ''}`
@@ -30,10 +30,7 @@ const formatOptions = winston.format.combine(
 
 export const logger = winston.createLogger({
 	transports: [
-	// In test env put logs into a file, otherwise the console
-		...(process.env.NODE_ENV === 'development'
-			? [new winston.transports.File({ filename: `${ROOT_DIR}/test-logs` })]
-			: [new winston.transports.Console({ format: formatOptions })]),
+		new winston.transports.Console({ format: formatOptions })
 	],
 	exitOnError: false,
 })

@@ -52,7 +52,7 @@ abstract class PostService {
 
 		return {
 			slug: this.throwIfUndefinedOrNull(
-				postData.split('/')[1], '[createPost] Empty slug response. Got undefined from index'
+				postData.split('/').filter(i => !!i)[1], '[createPost] Empty slug response. Got undefined from index'
 			)
 		}
 	}

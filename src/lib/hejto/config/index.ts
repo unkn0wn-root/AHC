@@ -7,6 +7,6 @@ export default {
 	port: process.env.PORT,
 	hejtoApiUrl: 'https://api.hejto.pl',
 	headers: {
-		apiKey: process.env.HEJTO_API_KEY
+		Authorization: `Bearer ${process.env.HEJTO_API_KEY}`
 	}
 }

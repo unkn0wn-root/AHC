@@ -24,7 +24,6 @@ export class HejtoProvider extends IHejtoProvider {
 		options?: Omit<AxiosRequestConfig<T>, 'url' | 'params'>,
 	): Promise<HejtoResponse<T>> {
 		try {
-			console.log({headers: this.HEADERS, opt: options, url: this.format(url)})
 			const response = await axios.request<T>({
 				url: this.format(url),
 				params,

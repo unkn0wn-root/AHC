@@ -1,5 +1,6 @@
 import './database'
 import cookieParser from 'cookie-parser'
+import os from 'os'
 import crypto from 'crypto'
 import express from 'express'
 import helmet from 'helmet'
@@ -17,8 +18,6 @@ import { logger } from './logger'
 import advertismentModel from './models/ads'
 import confessionModel from './models/confession'
 import replyModel from './models/reply'
-
-if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development'
 
 const app = express()
 
@@ -163,7 +162,16 @@ export const server = http.createServer(app)
 
 const _port = process.env.PORT || 8080
 
+/** check memory usage and do not run if less then 1 GB */
+const freeMemory = Math.round(os.freemem() / (1024 * 1024));
+if (freeMemory < 1024) {
+	throw new Error(
+		`Cannot run engine if available memory is less then 1024 MiB => Current free memory: ${freeMemory} MiB`
+	);
+}
+
 server.listen(_port, () => {
-	logger.info(`🛡️ Server started on port: ${_port}`)
-	logger.info(`🖥️ Running in env: ${process.env.NODE_ENV}`)
+	logger.info(`🛡️  Server started on port: ${_port}`)
+	logger.info(`🖥️  Running in env: ${process.env.NODE_ENV}`)
+	logger.info(`🖥️  Current server available memory: ${freeMemory} MiB`)
 })
