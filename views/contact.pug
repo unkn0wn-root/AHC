@@ -1,0 +1,52 @@
+extends ./base.pug
+block content
+  p.info Możesz skontaktować się z administratorem serwisu na różne sposoby
+    ul
+      li admin at anonimowehejto.pl
+      li #[a(href="/conversation/U_HannibalLecter/new") konwersacja na anonimowehejto.pl (anonimowe)]
+      li #[a(href="https://www.hejto.pl/wiadomosci?username=HannibalLecter") Hejto]
+    |Jeśli chcesz zaszyfrować wiadomość użyj formularza poniżej. Zaszyfrowaną wiadomość możesz przekazać mi przez dowolną formę kontaktu z listy powyżej. #[b Pamiętaj jeśli chcesz, żebym również mógł odpowiedzieć zaszyfrowaną wiadomościa musisz w wiadomości zawrzeć swój klucz publiczny]
+  textarea#pgp-message.form-control(style='width: 600px; height: 300px')
+  br
+  button#pgp-message-button.btn.btn-primary(type='button') Encrypt message
+  button#pgp-message-clear.btn.btn-default(type='button') Clear
+  span.text-muted powerder by #[a(href='http://openpgpjs.org/') OpenPGP.js]
+  h2 Klucz publiczny 
+  pre#public-key.
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+    mDMEY8rzmBYJKwYBBAHaRw8BAQdADyKWvj1gKq8eebUeTTeTFQDMAZewwO8AC/+J
+    8o8q3nq0HWRhdmlkMCA8dW5rbjB3bl9yb290QHR1dGEuaW8+iJkEExYKAEEWIQTC
+    59ocQTB2VtbQAO20CkVblvAu7wUCY8rzmAIbAwUJA8M5GAULCQgHAgIiAgYVCgkI
+    CwIEFgIDAQIeBwIXgAAKCRC0CkVblvAu71JpAP9lKbS+qrgfMAgcneJsPBij2sqB
+    NK6qbtby/O+Mj5wr3gEAihoHY2TjvxB57jLVk2ufR5YY3UraVftgO0JW+r4uUQC4
+    OARjyvOYEgorBgEEAZdVAQUBAQdArS43KPHJIjWtfU+MkrdXkRZGYmM/+Poj+yYC
+    gHvA31wDAQgHiH4EGBYKACYWIQTC59ocQTB2VtbQAO20CkVblvAu7wUCY8rzmAIb
+    DAUJA8M5GAAKCRC0CkVblvAu7+AoAQDDxjlnM1EV6lVVyBONRSNwbNhqTkB3NFA8
+    +x/SjWcppwD/aUTYr6atfIt4UQngRMXuky/UI+/4A1aMyu3AHHFUfQ8=
+    =s1KF
+    -----END PGP PUBLIC KEY BLOCK-----
+block script
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/openpgp/2.5.8/openpgp.min.js")
+  script(type='text/javascript').
+    $(document).ready(function() {
+      $('#pgp-message-button').click(function() {
+        var message = $('#pgp-message').val();
+        if(message.length == 0) {
+          alert("Please enter a message.");
+          return;
+        } else if(message.indexOf("-----BEGIN PGP MESSAGE-----") === 0) {
+          alert("The message has already been encrypted; no need to encrypt it again.");
+          return;
+        }
+        
+        var pubKey = openpgp.key.readArmored($('#public-key').text()).keys;
+        openpgp.encrypt({data: message, publicKeys: pubKey}).then(function(ciphertext){
+          $('#pgp-message').val(ciphertext.data);
+        });
+      });
+      
+      $('#pgp-message-clear').click(function() {
+        $('#pgp-message').val('');
+      });
+    });

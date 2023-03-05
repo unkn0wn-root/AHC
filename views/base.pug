@@ -1,0 +1,18 @@
+doctype
+html( lang="pl" )
+    head
+        title Anonimowe Hejto Wyznania
+        meta( charset='utf-8' )
+        meta( http-equiv='X-UA-Compatible', content='IE=edge' )
+        meta( name='viewport', content='width=device-width, initial-scale=1.0' )
+        meta( name='description', content='Anonimowe Hejto Wyznania' )
+        link(href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", rel="stylesheet")
+        link(rel="icon", type="image/png", href="/images/favicon.png")
+        script(src="https://unpkg.com/jquery@3.5.0/dist/jquery.js")
+        block headscripts
+        block headstyle
+        body
+          include ./menu.pug
+          .container
+            block content
+        block script

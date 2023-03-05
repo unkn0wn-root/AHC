@@ -1,0 +1,33 @@
+extends ./base.pug
+block content
+  p.info Napisz co leży Ci na sercu, a następnie post zostanie opublikowany anonimowo (z konta @AnonimoweHejto) na Hejto w dysktusji po zaakceptowaniu.
+   .add-confession
+    h1 Dodaj wyznanie
+    form#confession(action="/", method="post")
+      .form-group
+        textarea.form-control.confession(type="text", name="text", placeholder="Wpisz tutaj swoje wyznanie" rows=10)
+        fieldset.buttons#markdown(style="display: block; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-radius: 4px;")
+          a.btn.btn-default.btn-sm(href="#", title="tekst pogrubiony" style="margin-right: 0.5em;").editb
+            span.glyphicon.glyphicon-bold(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="tekst pochylony" style="margin-right: 0.5em;").editi
+            span.glyphicon.glyphicon-italic(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="cytat" style="margin-right: 0.5em;").editquote
+            span.glyphicon.glyphicon-comment(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="link" style="margin-right: 0.5em;").editlink
+            span.glyphicon.glyphicon-link(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="kod" style="margin-right: 0.5em;").editcode
+            span.glyphicon.glyphicon-flash(aria-hidden="true")
+          a.btn.btn-default.btn-sm(href="#", title="spoiler" style="margin-right: 0.5em;").editspoiler
+            span.glyphicon.glyphicon-arrow-down(aria-hidden="true")
+          .btn-group
+            button.btn.btn-default.btn-sm.lenny(type="button")
+              a.editlenny(href="#", title="lennyface") ( ͡° ͜ʖ ͡°)
+
+      .form-group
+        input.form-control(type="url", name="embed", placeholder="URL do obrazka", maxlength=3000)
+        small.form-text.text-muted 
+          | Bezpośredni link do obrazka (zakończony rozszerzeniem pliku np. https://i.imgur.com/3qajQcs.png)
+      input(name="_csrf", type="hidden", value=csrfToken)
+      button.btn.btn-large.btn-success(type="submit") Wyślij
+    p.info Wyznania zostaną opublikowane po zaakceptowaniu przez moderatora.
+  script(src='/js/main.js')
