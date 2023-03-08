@@ -25,8 +25,8 @@ async function getEntryBody(confession, user) {
 }
 
 function getCommentBody(reply, user) {
-	const authorizedMsg = reply.authorized ? '\n**Ten komentarz został dodany przez osobę dodającą wpis (OP)**' : ''
-	return `**${reply.alias}**: ${reply.text}\n---\n${authorizedMsg}\nZaakceptował: [${user.username}](${config.siteURL}/conversation/U_${user.username}/new)`
+	const authorizedMsg = reply.authorized ? '\n**Ten komentarz został dodany przez osobę dodającą wpis (OP)**\n\n' : ''
+	return `**${reply.alias}**: ${reply.text}\n\n \n\\---\n${authorizedMsg} \nZaakceptował: [${user.username}](${config.siteURL}/conversation/U_${user.username}/new)`
 }
 
 export default { getEntryBody, getCommentBody }
