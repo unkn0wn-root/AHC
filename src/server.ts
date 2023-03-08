@@ -78,9 +78,12 @@ export async function AHCServer({app}: { app: Application }) {
 	app.post('/', csrfProtection, csrfErrorHander, async (req: Request, res: Response, next: NextFunction) => {
 		const confession = new confessionModel()
 
-		if (!req.body.text) return next(new ClientSyntaxError())
+		if (!req.body.text)
+			return res
+					.status(400)
+					.send('Nie możesz dodać pustego wyznania. Postaraj się napisać coś więcej.')
 
-		confession.text = req.body.text || ''
+		confession.text = req.body.text
 		confession.IPAdress = req.ip
 		confession.remotePort = req.connection.remotePort.toString()
 		confession.embed = req.body.embed
