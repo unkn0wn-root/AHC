@@ -81,7 +81,7 @@ export async function AHCServer({app}: { app: Application }) {
 		if (!req.body.text)
 			return res
 					.status(400)
-					.send('Nie możesz dodać pustego wyznania. Postaraj się napisać coś więcej.')
+					.send('Nie możesz dodać pustego wyznania. Postaraj się coś napisać.')
 
 		confession.text = req.body.text
 		confession.IPAdress = req.ip
