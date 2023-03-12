@@ -8,8 +8,9 @@ import {
 	ArchivePost,
 	PostComments
 } from '../models'
-import logger from '../../../logger';
-
+import logger from '../../../logger'
+import FormData from 'form-data'
+import { Stream } from 'form-data'
 
 interface IUploadResponse {
 	uuid: string,
@@ -24,27 +25,29 @@ abstract class PostService {
 
 	public static async createPost(post: PostModel, embed?: string): Promise<{slug: string}>
 	{
-			exitIfNoUuid: if (embed) {
-				const fileName = this.getFileNameFromUrl(embed)
-				const image = await this.downloadImageFromEmbed(embed)
+		exitIfNoUuid: if (embed) {
+			const fileName = this.getFileNameFromUrl(embed)
+			const image = await this.downloadImageFromEmbed(embed)
 
-				if (!image.error) {
-					const uploadedImageUuid = (
-						await this.uploadImageToHejtoS3(fileName, new Blob([image.value]))
-					)
+			if (!image.error) {
+				const uploadedImageUuid = await this.uploadImageToHejtoS3(fileName, image.value)
 
-					if (!uploadedImageUuid.uuid) break exitIfNoUuid
+				if (!uploadedImageUuid.uuid) break exitIfNoUuid
 
-					post.images[0].uuid = uploadedImageUuid.uuid
-					post.images[0].position = 1
-				}
-			} else {
-				post.images = []
+				post.images = [
+					{
+						uuid:  uploadedImageUuid.uuid,
+						position: 1
+					}
+				]
 			}
+		} else {
+			post.images = []
+		}
 
 		const postData = (
 			await this._hejto.send(
-				'posts', {}, { method: 'POST', data: post }
+				'posts', {}, {}, { method: 'POST', data: post }
 			)
 		)
 		.headers
@@ -60,7 +63,7 @@ abstract class PostService {
 	public static async getPost(postSlug: string): Promise<PostApiModel> {
 		return (
 			await this._hejto.send<PostApiModel>(
-				concatUrls('posts', postSlug), {}, { method: 'GET' }
+				concatUrls('posts', postSlug), {}, {}, { method: 'GET' }
 			)
 		)
 		.data
@@ -69,7 +72,7 @@ abstract class PostService {
 	public static async getPostComments(postSlug: string): Promise<PostComments> {
 		return (
 			await this._hejto.send<PostComments>(
-				concatUrls('posts', postSlug, 'comments'), {}, { method: 'GET' }
+				concatUrls('posts', postSlug, 'comments'), {}, {}, { method: 'GET' }
 			)
 		)
 		.data
@@ -78,7 +81,7 @@ abstract class PostService {
 	public static async deletePost(postSlug: string) {
 		return (
 			await this._hejto.send(
-				concatUrls('posts', postSlug), {}, { method: 'DELETE' }
+				concatUrls('posts', postSlug), {}, {}, { method: 'DELETE' }
 			)
 		)
 	}
@@ -105,16 +108,19 @@ abstract class PostService {
 
 	private static async uploadImageToHejtoS3(
 		fileName: string,
-		arrBufferImage: Blob
+		imageStream: Stream
 		): Promise<IUploadResponse> {
 		try {
+			const imageData = new FormData()
+			imageData.append('image', imageStream)
 			const uploadResult = (
 				await this._hejto.send(
-					'/uploads?target=post', {},
+					'uploads?target=post', {}, {
+							...imageData.getHeaders()
+						},
 					{
 						method: 'POST',
-						data: new FormData().append('image', arrBufferImage, fileName),
-						headers: {'Content-Type': 'multipart/form-data'}
+						data: imageData
 					}
 				)
 			)
@@ -135,12 +141,10 @@ abstract class PostService {
 		}
 	}
 
-	private static async downloadImageFromEmbed(url: string): Promise<{error: boolean, value: ArrayBuffer}> {
+	private static async downloadImageFromEmbed(url: string): Promise<{error: boolean, value: Stream}> {
 		try {
-			const result = (await axios({
-				url,
-				method: 'GET',
-				responseType: 'arraybuffer'
+			const result = (await axios.get(url, {
+				responseType: 'stream'
 			}))
 			.data
 

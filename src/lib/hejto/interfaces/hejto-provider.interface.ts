@@ -37,6 +37,7 @@ export abstract class IHejtoProvider {
 	abstract send<T>(
 		url: string,
 		params?: { [key: string]: string },
+		headers?: { [key: string]: string },
 		options?: Omit<AxiosRequestConfig<T>, 'url' | 'params'>,
 		formatUrl?: (baseUrl: string, url: string) => string,
 	): Promise<HejtoResponse<T>>

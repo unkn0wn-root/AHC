@@ -44,7 +44,7 @@ class ConversationService {
         const postMessage =
             (
                 await this._hejto.send(
-                    concatUrls('conversations', this._conversationUuid, 'messages'), {},
+                    concatUrls('conversations', this._conversationUuid, 'messages'), {}, {},
                     { method: 'POST', data: content }
                 )
             )
@@ -67,7 +67,7 @@ class ConversationService {
 
         const conversationCreated = (
             await this._hejto.send<OpenConversationModel & CreateMessageCovertationModel>(
-                'conversations', {}, { method: 'POST', data: conversationModel as any }
+                'conversations', {}, {}, { method: 'POST', data: conversationModel as any }
             )
         )
 

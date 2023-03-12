@@ -21,19 +21,14 @@ export class HejtoProvider extends IHejtoProvider {
 	async send<T>(
 		url: string,
 		params?: { [key: string]: string },
+		headers?: { [key: string]: string },
 		options?: Omit<AxiosRequestConfig<T>, 'url' | 'params'>,
 	): Promise<HejtoResponse<T>> {
 		try {
-			logger.info('Internal request to Hejto API:', {
-				requestUrl: this.format(url),
-				requestParams: params,
-				...options
-			})
-
 			const response = await axios.request<T>({
 				url: this.format(url),
 				params,
-				headers: this.HEADERS,
+				headers: { ...headers, ...this.HEADERS },
 				...options,
 			})
 
