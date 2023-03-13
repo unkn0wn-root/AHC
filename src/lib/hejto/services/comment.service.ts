@@ -28,7 +28,7 @@ class CommentService {
 	{
 		const postComment: string = (
 			await this._hejto.send(
-				concatUrls('posts', this._postSlug, 'comments'), {}, {},
+				concatUrls('posts', this._postSlug, 'comments'), {},
 				{ method: 'POST', data: comment }
 			)
 		)
@@ -48,7 +48,7 @@ class CommentService {
 	public async getComment(commentUuid: string = this._commentUuid): Promise<PostAPIComment> {
 		return (
 			await this._hejto.send<PostAPIComment>(
-				concatUrls('posts', this._postSlug, 'comments', commentUuid), {}, {}, { method: 'GET' }
+				concatUrls('posts', this._postSlug, 'comments', commentUuid), {}, { method: 'GET' }
 			)
 		)
 		.data
@@ -59,7 +59,7 @@ class CommentService {
 	 */
 	public async deleteComment(commentUuid: string = this._commentUuid): Promise<boolean> {
 		const status = await this._hejto.send(
-			concatUrls('posts', this._postSlug, 'comments', commentUuid), {}, {}, { method: 'DELETE' }
+			concatUrls('posts', this._postSlug, 'comments', commentUuid), {}, { method: 'DELETE' }
 		)
 
 		return status.status < 400
