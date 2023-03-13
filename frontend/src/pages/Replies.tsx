@@ -1,11 +1,21 @@
 import {
-  Container, LinearProgress, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead,
+  Container,
+  LinearProgress,
+  Link,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
   TableRow,
   Tooltip,
 } from '@mui/material';
 import EmbedIcon from '@mui/icons-material/Attachment';
 import React, {
-  useContext, useMemo,
+  useContext,
+  useMemo,
+  useState
 } from 'react';
 import { APIContext } from '../App';
 import ActionButtons from '../components/ActionButtons';
@@ -26,6 +36,7 @@ const buildCommentLink = (reply: IReply) =>
 
 export default function Replies() {
   const { httpClient, apiClient } = useContext(APIContext);
+  const [ showMore, setShowMore ] = useState(false);
 
   const getPageMemoized = useMemo(() => getPage(httpClient), [httpClient]);
 
@@ -76,8 +87,8 @@ export default function Replies() {
                 <TableCell>
                   {reply.alias}
                 </TableCell>
-                <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>
-                  {reply.text}
+                <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }} onClick={() => setShowMore(!showMore)}>
+                {showMore ? reply.text : `${reply.text.substring(0, 30)}...`}
                 </TableCell>
                 <TableCell style={{ maxWidth: 150, textOverflow: 'ellipsis', overflow: 'hidden' }}>
                   <ShortEmebed url={reply.embed} />

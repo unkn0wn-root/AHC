@@ -91,7 +91,7 @@ export default function () {
             onClose={() => setViewOtherFromThisIp(false)}
           />
           <StyledCardHeader
-            title={`${id} / ${confession.auth}`}
+            title={`${id} | ${confession.auth}`}
             subheader={(
               <Grid container>
                 <Box>
@@ -104,7 +104,7 @@ export default function () {
                 </Box>
                 <Box mx={2} onClick={() => setViewIpDialog(true)}>
                   <Typography color="primary">
-                    IP
+                    Show IP
                   </Typography>
                 </Box>
                 <Box mx={2} onClick={() => setViewOtherFromThisIp(true)}>
@@ -112,18 +112,18 @@ export default function () {
                     Other confessions from this IP
                   </Typography>
                 </Box>
+                {confession.slug && (
+                  <Box mx={1}>
+                    <Link href={`https://hejto.pl/wpis/${confession.slug}`} target="_blank" rel="noreferrer">
+                      Show Confession on Hejto
+                    </Link>
+                  </Box>
+                )}
               </Grid>
             )}
             status={confession.status}
             action={(
               <Grid container alignItems="center">
-                {confession.slug && (
-                  <Box mx={1}>
-                    <Link href={`https://hejto.pl/wpis/${confession.slug}`} target="_blank" rel="noreferrer">
-                      {confession.slug}
-                    </Link>
-                  </Box>
-                )}
                 <Box>
                   <ConfessionActionButtons
                     model={confession}

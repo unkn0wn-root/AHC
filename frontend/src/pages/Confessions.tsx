@@ -6,7 +6,7 @@ import {
 import EmbedIcon from '@mui/icons-material/Attachment';
 import SurveyIcon from '@mui/icons-material/Poll';
 import { Link as RouterLink, } from 'react-router-dom';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { APIContext } from '../App';
 import ConfessionActionButtons from '../components/ConfessionActionButtons';
 import usePagination from '../components/pagination';
@@ -23,6 +23,7 @@ const getPage = (httpClient: HttpClient) =>
 
 export default function Confessions() {
   const { httpClient, apiClient } = useContext(APIContext);
+  const [ showMore, setShowMore ] = useState(false);
 
   const getPageMemoized = useMemo(() => getPage(httpClient), [httpClient]);
 
@@ -72,8 +73,8 @@ export default function Confessions() {
                     {confession.embed && <Tooltip title="confession with embedded content"><EmbedIcon /></Tooltip>}
                   </div>
                 </TableCell>
-                <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>
-                  {confession.text}
+                <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }} onClick={() => setShowMore(!showMore)}>
+                  {showMore ? confession.text : `${confession.text.substring(0, 30)}...`}
                 </TableCell>
                 <TableCell style={{ maxWidth: 150, textOverflow: 'ellipsis', overflow: 'hidden' }}>
                   <ShortEmbed url={confession.embed} />
