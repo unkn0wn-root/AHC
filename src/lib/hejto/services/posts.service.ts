@@ -31,9 +31,7 @@ abstract class PostService {
 
 			if (!image.error) {
 				const uploadedImageUuid = await this.uploadImageToHejtoS3(fileName, image.value)
-
 				if (!uploadedImageUuid.uuid) break exitIfNoUuid
-
 				post.images = [
 					{
 						uuid:  uploadedImageUuid.uuid,
@@ -47,7 +45,7 @@ abstract class PostService {
 
 		const postData = (
 			await this._hejto.send(
-				'posts', {}, {}, { method: 'POST', data: post }
+				'posts', {}, { method: 'POST', data: post }
 			)
 		)
 		.headers
@@ -55,7 +53,8 @@ abstract class PostService {
 
 		return {
 			slug: this.throwIfUndefinedOrNull(
-				postData.split('/').filter(i => !!i)[1], '[createPost] Empty slug response. Got undefined from index'
+				postData.split('/').filter(
+					i => !!i)[1], '[createPost] Empty slug response. Got undefined from index'
 			)
 		}
 	}
@@ -63,7 +62,7 @@ abstract class PostService {
 	public static async getPost(postSlug: string): Promise<PostApiModel> {
 		return (
 			await this._hejto.send<PostApiModel>(
-				concatUrls('posts', postSlug), {}, {}, { method: 'GET' }
+				concatUrls('posts', postSlug), {}, { method: 'GET' }
 			)
 		)
 		.data
@@ -72,7 +71,7 @@ abstract class PostService {
 	public static async getPostComments(postSlug: string): Promise<PostComments> {
 		return (
 			await this._hejto.send<PostComments>(
-				concatUrls('posts', postSlug, 'comments'), {}, {}, { method: 'GET' }
+				concatUrls('posts', postSlug, 'comments'), {}, { method: 'GET' }
 			)
 		)
 		.data
@@ -81,7 +80,7 @@ abstract class PostService {
 	public static async deletePost(postSlug: string) {
 		return (
 			await this._hejto.send(
-				concatUrls('posts', postSlug), {}, {}, { method: 'DELETE' }
+				concatUrls('posts', postSlug), {}, { method: 'DELETE' }
 			)
 		)
 	}
@@ -112,15 +111,16 @@ abstract class PostService {
 		): Promise<IUploadResponse> {
 		try {
 			const imageData = new FormData()
-			imageData.append('image', imageStream)
+			imageData.append('image', imageStream, fileName)
 			const uploadResult = (
 				await this._hejto.send(
-					'uploads?target=post', {}, {
-							...imageData.getHeaders()
-						},
+					'uploads?target=post', {},
 					{
 						method: 'POST',
-						data: imageData
+						data: imageData,
+						headers: {
+							...imageData.getHeaders()
+						}
 					}
 				)
 			)
