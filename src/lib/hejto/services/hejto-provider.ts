@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosRequestConfig } from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import logger from '../../../logger'
 import { concatUrls } from '../utils'
 import { HejtoResponse } from '../types/hejto-response.type'
