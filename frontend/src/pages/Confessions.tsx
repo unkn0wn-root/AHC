@@ -1,7 +1,7 @@
 import {
   Container, LinearProgress,
   Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead,
-  TableRow, Tooltip,
+  TableRow, Tooltip, Dialog, DialogContent, DialogTitle
 } from '@mui/material';
 import EmbedIcon from '@mui/icons-material/Attachment';
 import SurveyIcon from '@mui/icons-material/Poll';
@@ -16,10 +16,24 @@ import { HttpClient } from '../service/HttpClient';
 import { noOpFn, toggleStatus } from '../utils';
 
 export type IConfession = any
+let confessionText
 
 const getPage = (httpClient: HttpClient) =>
   (page: number, perPage: number) =>
     httpClient.SWALLOW(httpClient.GET(`/confessions?page=${page}&perPage=${perPage}`));
+
+const ViewConfessionDialog = ({text, more, onClose}) => {
+  return (
+    <Dialog open={more} onClose={onClose}>
+      <DialogTitle>
+        Confession message:
+      </DialogTitle>
+      <DialogContent>
+        {text}
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 export default function Confessions() {
   const { httpClient, apiClient } = useContext(APIContext);
@@ -49,6 +63,11 @@ export default function Confessions() {
 
   return (
     <Container>
+      <ViewConfessionDialog
+        text={confessionText}
+        more={showMore}
+        onClose={() => setShowMore(!showMore)}
+      />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -73,16 +92,16 @@ export default function Confessions() {
                     {confession.embed && <Tooltip title="confession with embedded content"><EmbedIcon /></Tooltip>}
                   </div>
                 </TableCell>
-                <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }} onClick={() => setShowMore(!showMore)}>
-                  {showMore ? confession.text : `${confession.text.substring(0, 30)}...`}
+                <TableCell style={{ whiteSpace: 'pre-line' }} onClick={() => {confessionText = confession.text ; setShowMore(!showMore)}}>
+                  {`${confession.text.substring(0, 30).trim()}...`}
                 </TableCell>
-                <TableCell style={{ maxWidth: 150, textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                <TableCell style={{ maxWidth: 100, textOverflow: 'ellipsis', overflow: 'hidden' }}>
                   <ShortEmbed url={confession.embed} />
                 </TableCell>
                 <TableCell>
                   {confession.auth}
                 </TableCell>
-                <TableCell>
+                <TableCell style={{ maxWidth: 250, textOverflow: 'ellipsis', overflow: 'hidden' }}>
                   {confession.slug && (
                     <Link href={`https://hejto.pl/wpis/${confession.slug}`} rel="noopener" target="_blank">
                       {confession.slug}
