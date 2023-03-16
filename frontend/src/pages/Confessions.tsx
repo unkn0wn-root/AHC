@@ -16,12 +16,12 @@ import { HttpClient } from '../service/HttpClient';
 import { noOpFn, toggleStatus } from '../utils';
 
 export type IConfession = any
-let confessionText
 
 const getPage = (httpClient: HttpClient) =>
   (page: number, perPage: number) =>
     httpClient.SWALLOW(httpClient.GET(`/confessions?page=${page}&perPage=${perPage}`));
 
+let confessionText
 const ViewConfessionDialog = ({text, more, onClose}) => {
   return (
     <Dialog open={more} onClose={onClose}>

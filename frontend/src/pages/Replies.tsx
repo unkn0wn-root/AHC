@@ -10,6 +10,9 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  Dialog,
+  DialogContent,
+  DialogTitle
 } from '@mui/material';
 import EmbedIcon from '@mui/icons-material/Attachment';
 import React, {
@@ -33,6 +36,20 @@ const getPage = (httpClient: HttpClient) =>
 
 const buildCommentLink = (reply: IReply) =>
   `https://hejto.pl/wpis/${reply.parentID.slug}?commentId=${reply.commentID ? `#comment-${reply.commentID}` : ''}`;
+
+let replyText
+const ViewReplyDialog = ({text, more, onClose}) => {
+  return (
+    <Dialog open={more} onClose={onClose}>
+      <DialogTitle>
+        Confession message:
+      </DialogTitle>
+      <DialogContent>
+        {text}
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 export default function Replies() {
   const { httpClient, apiClient } = useContext(APIContext);
@@ -61,6 +78,11 @@ export default function Replies() {
 
   return (
     <Container>
+      <ViewReplyDialog
+        text={replyText}
+        more={showMore}
+        onClose={() => setShowMore(!showMore)}
+      />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -87,10 +109,10 @@ export default function Replies() {
                 <TableCell>
                   {reply.alias}
                 </TableCell>
-                <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }} onClick={() => setShowMore(!showMore)}>
-                {showMore ? reply.text : `${reply.text.substring(0, 30)}...`}
+                <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }} onClick={() => {replyText = reply.text; setShowMore(!showMore)}}>
+                  {`${reply.text.substring(0, 30).trim()}...`}
                 </TableCell>
-                <TableCell style={{ maxWidth: 150, textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                <TableCell style={{ maxWidth: 100, textOverflow: 'ellipsis', overflow: 'hidden' }}>
                   <ShortEmebed url={reply.embed} />
                 </TableCell>
                 <TableCell>
