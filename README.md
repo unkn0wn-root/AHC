@@ -1,4 +1,4 @@
-# Anonymous Hejto Confessions [![CI](https://github.com/fastify/fastify/workflows/ci/badge.svg)](https://github.com/unkn0wn-root/AHC/actions/workflows/Build.yml)
+# Anonymous Hejto Confessions [![CI](https://github.com/unkn0wn-root/AHC/actions/workflows/Build.yml/badge.svg)](https://github.com/unkn0wn-root/AHC/actions/workflows/Build.yml)
 Create anonymous post, comment a thread, and chat anonymously with OP (<b>O</b>riginal <b>P</b>oster) on [Hejto](https://www.hejto.pl)
 
 ## Want to try it out?
