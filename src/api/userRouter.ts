@@ -30,7 +30,7 @@ userRouter.get('/me', authentication, (req: RequestWithUser, res) => {
 userRouter.get('/',
 	authentication,
 	accessMiddleware('accessModsList'),
-	(req, res) => {
+	(_, res) => {
 		user.find({}, { username: 1, flags: 1 }).lean().then(userList => {
 			const userPermissionList = userList.map((user: any) => {
 				user.permissions = getFlagPermissions(user.flags)
@@ -103,7 +103,7 @@ userRouter.post('/login', async (req: Request, res: Response, next: NextFunction
 	}
 })
 
-userRouter.get('/logout', (req, res) => {
+userRouter.get('/logout', (_, res) => {
 	res.clearCookie('token')
 	return res.json(makeAPIResponse(res, {}))
 })

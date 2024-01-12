@@ -15,16 +15,14 @@ import {
 	NotFoundError
 } from '../exceptions/httpExceptions'
 
-export const replyRouter = Router()
 
 type RequestWithReply = RequestWithUser & { reply: IReply }
+export const replyRouter = Router()
 
-async function getReplyMiddleware(req: RequestWithReply, res: Response, next: NextFunction) {
+async function getReplyMiddleware(req: RequestWithReply, _: Response, next: NextFunction) {
 	try {
 		const reply = await replyModel.findById(req.params.id)
-
 		if (!reply) return next(new NotFoundError('Reply not found'))
-
 		req.reply = reply
 		return next()
 	} catch (err) {
@@ -42,7 +40,7 @@ replyRouter.get('/', async (req: RequestWithUser, res: Response, next: NextFunct
 				.sort({ _id: -1 })
 				.lean()
 
-		const paginationObject = await getPage(req, replyModel, query)
+        const paginationObject = await getPage(req, replyModel, query)
 		return res.json(makeAPIResponse(res, paginationObject))
 	} catch (err) {
 		return next(new InternalServerError(undefined, err))
@@ -55,10 +53,8 @@ replyRouter.delete('/reply/:id/',
 	async (req: RequestWithReply, res: Response, next: NextFunction) => {
 		try {
 			const reply = await req.reply.populate([{ path: 'parentID', select: ['slug', 'actions'] }])
-
 			const commentService = new CommentService(reply.parentID.slug)
 			await commentService.deleteComment(reply.commentGuid)
-
 			const action = await createAction(
 				req.user._id,
 				ActionType.DELETE_REPLY,
@@ -70,8 +66,7 @@ replyRouter.delete('/reply/:id/',
 			reply.status = ConfessionStatus.DECLINED,
 			reply.commentGuid = null
 
-			await Promise.all([reply.save(), reply.parentID.save()])
-
+            await Promise.all([reply.save(), reply.parentID.save()])
 			return res.json(makeAPIResponse(res,
 				{ action, patchObject: {
 					status: reply.status,
@@ -107,7 +102,6 @@ replyRouter.get('/reply/:id/accept',
 			await confession.updateOne({ _id: reply.parentID }, { $push: { actions: action } })
 
 			const { status, addedBy, commentGuid } = reply
-
 			return res.json(makeAPIResponse(res, {
 				patchObject: { status, addedBy, commentGuid },
 				action,
@@ -126,7 +120,9 @@ replyRouter.put('/reply/:id/status',
 			return next(new ClientSyntaxError('Wrong status'))
 
 		if (req.reply.status === req.body.status)
-			return res.status(200).json(makeAPIResponse(res, { patchObject: { status: req.reply.status } }))
+			return res.status(200).json(
+                makeAPIResponse(res, { patchObject: { status: req.reply.status } })
+            )
 
 		req.reply.status = req.body.status
 
@@ -137,7 +133,6 @@ replyRouter.put('/reply/:id/status',
 			`${req.reply._id} => ${ConfessionStatus[req.reply.status]}`).save()
 
 		await confession.updateOne({ _id: req.reply.parentID }, { $push: { actions: action } })
-
 		try {
 			await req.reply.save()
 			return res.status(200).json(makeAPIResponse(res, { patchObject: { status: req.reply.status }, action }))

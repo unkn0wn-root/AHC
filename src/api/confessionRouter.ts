@@ -27,13 +27,10 @@ export interface AcceptConfessionOptions {
 	isPlus18?: boolean
 }
 
-async function getConfessionMiddleware(req: RequestWithConfession, res: Response, next: NextFunction) {
+async function getConfessionMiddleware(req: RequestWithConfession, _: Response, next: NextFunction) {
 		try {
 			const confession = await confessionModel.findById(req.params.id)
-
-			if (!confession)
-				return next(new NotFoundError('Confession not found'))
-
+			if (!confession) return next(new NotFoundError('Confession not found'))
 			req.confession = confession
 			return next()
 		} catch (err) {
@@ -49,7 +46,7 @@ confessionRouter.get('/', async (req: RequestWithUser, res: Response, next: Next
 			.sort({ _id: -1 })
 			.lean()
 
-		const paginationObject = await getPage(req, confessionModel, query)
+        const paginationObject = await getPage(req, confessionModel, query)
 		return res.json(makeAPIResponse(res, paginationObject))
 	} catch (err) {
 		return next(new InternalServerError('Cannot get confessions. Server error occured', err))
@@ -95,7 +92,6 @@ confessionRouter.delete('/confession/:id',
 				))
 
 				const { status } = req.confession
-
 				return res.json(makeAPIResponse(res, {
 					message: `Usunięto wpis ID: ${req.confession.slug}`,
 					patchObject: { status },
@@ -120,9 +116,8 @@ confessionRouter.post('/confession/:id/accept',
 				)
 		}
 
-		if (confession.status === ConfessionStatus.DECLINED) {
+		if (confession.status === ConfessionStatus.DECLINED)
 			return next(new ConflictError('Cannot add declined entry'))
-		}
 
 		try {
 			const entryBody = await bodyBuilder.getEntryBody(confession, req.user)
@@ -130,14 +125,12 @@ confessionRouter.post('/confession/:id/accept',
 			const embed = req.body.includeEmbed ? confession.embed : undefined
 			const response = await hejtoController.acceptConfession(entryBody, embed, adultMedia)
 
-			confession.slug = response.slug
+            confession.slug = response.slug
 
-			const action = await createAction(req.user._id, ActionType.ACCEPT_ENTRY).save()
-
+            const action = await createAction(req.user._id, ActionType.ACCEPT_ENTRY).save()
 			confession.actions.push(action)
 			confession.status = ConfessionStatus.ACCEPTED
 			confession.addedBy = req.user.username
-
 			confession.save().then(() => {
 				const { status, addedBy, slug } = confession
 				return res.json(makeAPIResponse(res, {
@@ -159,13 +152,14 @@ confessionRouter.put('/confession/:id/status',
 			return next(new ClientSyntaxError('Wrong status'))
 
 		if (req.confession.status === req.body.status)
-			return res.status(200).json(makeAPIResponse(res, { patchObject: { status: req.confession.status } }))
+			return res.status(200).json(
+                makeAPIResponse(res, { patchObject: { status: req.confession.status } })
+            )
 
 		const note = req.body.note
 		req.confession.status = req.body.status
-
-		const actionType = req.body.status === ConfessionStatus.DECLINED ?
-			ActionType.DECLINE_ENTRY
+		const actionType = req.body.status === ConfessionStatus.DECLINED
+            ? ActionType.DECLINE_ENTRY
 			: ActionType.REVERT_ENTRY_DECLINE
 
 		const action = await createAction(req.user._id, actionType, note).save()
@@ -196,17 +190,18 @@ confessionRouter.put('/confession/:id/tags',
 			`${req.body.tag} ${tagValue ? '✓' : '✗'}`)
 			.save()
 
-		const newTags = prepareArrayRefactored(req.confession.tags, req.body.tag, tagValue)
+        const newTags = prepareArrayRefactored(req.confession.tags, req.body.tag, tagValue)
 
-		try {
+        try {
 			await req.confession.updateOne({
 				$set: {
 					tags: newTags,
 				},
 				$push: { actions: action._id },
 			})
-
-			return res.status(200).json(makeAPIResponse(res, { patchObject: { tags: newTags }, action }))
+			return res.status(200).json(
+                makeAPIResponse(res, { patchObject: { tags: newTags }, action })
+            )
 		} catch (err) {
 			return next(new InternalServerError('Tags were not updated', err))
 		}
@@ -220,10 +215,7 @@ confessionRouter.get('/confession/:id/ip',
 		try {
 			const confession = await confessionModel.findById(req.params.id)
 				.select('_id IPAdress')
-
-			if (!confession)
-				return next(new NotFoundError())
-
+			if (!confession) return next(new NotFoundError())
 			return res.status(200).json(makeAPIResponse(res, confession))
 		} catch (err) {
 			return next(new InternalServerError('IP could not be retrieved. Server error', err))
@@ -239,7 +231,6 @@ confessionRouter.get('/confession/:id/otherFromIp',
 			const confessions = await confessionModel
 				.find({ IPAdress: req.confession.IPAdress }, { _id: 1, status: 1 })
 				.sort({ _id: -1 })
-
 			return res.json(makeAPIResponse(res, { confessions }))
 		} catch (err) {
 			return next(new InternalServerError('IP could not be retrieved. Server error', err))

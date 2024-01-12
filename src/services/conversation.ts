@@ -34,8 +34,9 @@ conversationRouter.get(
 		if (req.params.parent.substr(0, 2) === 'U_') {
 			const username = req.params.parent.substr(2)
 			const userObject = await userModel.findOne({ username: username }, { _id: 1, username: 1 })
-			if (!userObject) return next(new NotFoundError())
-			return renderConversationRoute(req, res, { type: 'user', userObject })
+            if (!userObject) return next(new NotFoundError())
+
+            return renderConversationRoute(req, res, { type: 'user', userObject })
 		}
 
 		confessionModel.findById(req.params.parent, (err, confession) => {
@@ -68,8 +69,9 @@ conversationRouter.post(
 		if (req.params.parent.substr(0, 2) === 'U_') {
 			const username = req.params.parent.substr(2)
 			const userObject = await userModel.findOne({ username: username }, { _id: 1, username: 1 })
-			if (!userObject) return next(new NotFoundError())
-			res.locals.conversationParent = userObject
+            if (!userObject) return next(new NotFoundError())
+
+            res.locals.conversationParent = userObject
 			return next()
 		}
 
@@ -92,8 +94,10 @@ conversationRouter.get(
 	if (!req.params.auth && req.user !== undefined && req.user._id) req.params.auth = req.user._id.toString()
 
 	conversationController.getConversation(req.params.conversationid, req.params.auth, (err, conversation) => {
-		if (err) return next(new InternalServerError('Conversation could not be loaded right now', err))
-		return renderConversationRoute(req, res, { conversation })
+		if (err)
+            return next(new InternalServerError('Conversation could not be loaded right now', err))
+
+        return renderConversationRoute(req, res, { conversation })
 	})
 })
 
@@ -102,9 +106,7 @@ conversationRouter.post(
 	csrfErrorHander,
 	(req: RequestWithUser, res: Response, next: NextFunction) => {
 	if (!req.params.conversationid) return next(new ClientSyntaxError('Missing conversationid'))
-	if (!req.params.auth && req.user !== undefined && req.user._id) {
-		req.params.auth = req.user._id.toString()
-	}
+	if (!req.params.auth && req.user !== undefined && req.user._id) req.params.auth = req.user._id.toString()
 
 	conversationController.newMessage(
 		req.params.conversationid,
