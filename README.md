@@ -12,9 +12,3 @@ Create anonymous post, comment a thread, and chat anonymously with OP (<b>O</b>r
 - Run both FE and BE with <b>npm run start</b> in each terminal window
 
 > **Note** Remember to change default Mongo password
-
-### Long-term ToDo :construction_worker:
-- [ ] Swap current csrf with something more "modern"
-- [ ] Create bootstrap script to test app locally without docker
-- [ ] Update React to current version (or rewrite frontend(?))
-
