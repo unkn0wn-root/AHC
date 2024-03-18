@@ -50,8 +50,8 @@ export class HejtoProvider extends IHejtoProvider {
 				data: response.data, status: response.status, headers: response.headers
 			}
 		} catch (e) {
-            // 493 means token is probably expired, so get new token and set env to new token
-            if (e.response?.status === 403) {
+            // 401 or 403 means token is probably expired, so get new token and set env to new token
+            if ([401, 403].includes(e.response?.status)) {
                 const token = await this.refreshToken()
                 process.env.HEJTO_API_KEY = token.access_token
             }
