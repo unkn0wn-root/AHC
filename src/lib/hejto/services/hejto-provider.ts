@@ -52,7 +52,7 @@ export class HejtoProvider extends IHejtoProvider {
 		} catch (e) {
             // 401 or 403 means token is probably expired, so get new token and set env to new token
             if ([401, 403].includes(e.response?.status)) {
-                const token = await this.refreshToken()
+                const token = await HejtoProvider.newToken()
                 process.env.HEJTO_API_KEY = token.access_token
             }
 			const responseMsg = e.response?.data ?? e.response?.message
@@ -67,6 +67,11 @@ export class HejtoProvider extends IHejtoProvider {
 			)
 		}
 	}
+
+    static newToken() {
+        const { hejtoAuthData, hejtoAuthUrl } = config
+        return HejtoProvider.getToken(hejtoAuthUrl, hejtoAuthData)
+    }
 
     static async getToken(
         authUrl: string,
@@ -96,12 +101,7 @@ export class HejtoProvider extends IHejtoProvider {
         return HejtoProvider.token
     }
 
-	private format(url: string): string {
+    private format(url: string): string {
 		return concatUrls(this.BASE_URL, url)
 	}
-
-    private refreshToken() {
-        const { hejtoAuthData, hejtoAuthUrl } = config
-        return HejtoProvider.getToken(hejtoAuthUrl, hejtoAuthData)
-    }
 }

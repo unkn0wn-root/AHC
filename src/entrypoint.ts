@@ -3,7 +3,6 @@ import os from 'os'
 import express from 'express'
 import { AHCServer } from './server'
 import { HejtoProvider } from './lib/hejto/services/hejto-provider'
-import config from './lib/hejto/config'
 
 (async () => {
 	const entrypoint = await AHCServer({ app: express() })
@@ -18,8 +17,7 @@ import config from './lib/hejto/config'
 	}
 
     // get token from hejto auth
-    const { hejtoAuthData, hejtoAuthUrl } = config
-    const token = await HejtoProvider.getToken(hejtoAuthUrl, hejtoAuthData)
+    const token = await HejtoProvider.newToken()
     // set token to env
     process.env.HEJTO_API_KEY = token.access_token
 
